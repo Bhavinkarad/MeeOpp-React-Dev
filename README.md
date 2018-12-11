@@ -43,14 +43,21 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 
 To learn React, check out the [React documentation](https://reactjs.org/).
 
-## Configure FireBase Store
+### Firebase Configuration
 
-.env File in configure your own fireStore
+* copy/paste your configuration from your Firebase project's dashboard into one of these files
+  * *src/components/Firebase/firebase.js* file
+  * *.env* file
+  * *.env.development* and *.env.production* files
 
-REACT_APP_API_KEY=********
-REACT_APP_AUTH_DOMAIN=*****************
-REACT_APP_DATABASE_URL=*****************
-REACT_APP_PROJECT_ID=****************
-REACT_APP_STORAGE_BUCKET=********************************
-REACT_APP_MESSAGING_SENDER_ID=89********
+The *.env* or *.env.development* and *.env.production* files could look like the following then:
+
+```
+REACT_APP_API_KEY=XXXXxxxx
+REACT_APP_AUTH_DOMAIN=xxxxXXXX.firebaseapp.com
+REACT_APP_DATABASE_URL=https://xxxXXXX.firebaseio.com
+REACT_APP_PROJECT_ID=xxxxXXXX
+REACT_APP_STORAGE_BUCKET=xxxxXXXX.appspot.com
+REACT_APP_MESSAGING_SENDER_ID=xxxxXXXX
+```
  
