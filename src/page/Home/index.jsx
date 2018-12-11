@@ -24,26 +24,71 @@ class Home extends Component {
     };
   }
 
-  async handleSubmit(e) {
+  componentDidMount() {
+    const id = localStorage.getItem('uuid');
+    if (id) {
+      this.findUserData(id);
+    }
+  }
+
+  async findUserData(id) {
+    try {
+      const { firebase: { store }, dispatch } = this.props;
+      const docRef = await store.collection('users').doc(id);
+      const doc = await docRef.get();
+      if (doc.exists) {
+        dispatch(createUserSuccess({ ...doc.data(), id }));
+      }
+    } catch (error) {
+      console.log('Error getting document:', error);
+    }
+  }
+
+  handleSubmit(e) {
     e.preventDefault();
+    const { form, user } = this.props;
+    form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        if (user.id) {
+          this.updateForm(values, user.id);
+        } else {
+          this.saveForm(values);
+        }
+      }
+    });
+  }
+
+  async saveForm(values) {
     const { form, firebase: { store }, dispatch } = this.props;
     try {
-      form.validateFieldsAndScroll(async (err, values) => {
-        if (!err) {
-          const { id, error } = await store.collection('users').add({ ...values });
-          if (id) {
-            dispatch(createUserSuccess({ ...values, id }));
-            form.resetFields();
-            notification.open({
-              message: 'Thank you..',
-              description: 'save successfully',
-            });
-          }
-
-          if (error) {
-            throw error;
-          }
+      const { id, error } = await store.collection('users').add({ ...values });
+      if (id) {
+        dispatch(createUserSuccess({ ...values, id }));
+        localStorage.setItem('uuid', id);
+        form.resetFields();
+        notification.open({
+          message: 'User Created',
+          description: 'save successfully',
+        });
+        if (error) {
+          throw error;
         }
+      }
+    } catch (error) {
+      dispatch(createUserFail(error.message));
+    }
+  }
+
+  async updateForm(values, id) {
+    const { form, firebase: { store }, dispatch } = this.props;
+    try {
+      const docRef = await store.collection('users').doc(id);
+      await docRef.set({ ...values });
+      dispatch(createUserSuccess({ ...values, id }));
+      form.resetFields();
+      notification.open({
+        message: 'User Updated',
+        description: 'save successfully',
       });
     } catch (error) {
       dispatch(createUserFail(error.message));
@@ -52,7 +97,7 @@ class Home extends Component {
 
   render() {
     const { formLayout } = this.state;
-    const { form: { getFieldDecorator } } = this.props;
+    const { form: { getFieldDecorator }, user } = this.props;
     const formItemLayout = formLayout === 'horizontal' ? {
       labelCol: { span: 5 },
       wrapperCol: { span: 6 },
@@ -87,6 +132,7 @@ class Home extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('firstName', {
+                  initialValue: user.firstName,
                   rules: [{
                     required: true, message: 'Please enter your firstName!',
                   }],
@@ -100,6 +146,7 @@ class Home extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('lastName', {
+                  initialValue: user.lastName,
                   rules: [{
                     required: true, message: 'Please enter your lastName!',
                   }],
@@ -113,6 +160,7 @@ class Home extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('company', {
+                  initialValue: user.company,
                   rules: [{
                     required: true, message: 'Please enter your company name!',
                   }],
@@ -125,7 +173,9 @@ class Home extends Component {
                 label="Department"
                 {...formItemLayout}
               >
-                {getFieldDecorator('department')(
+                {getFieldDecorator('department', {
+                  initialValue: user.department,
+                })(
                   <Input placeholder="department" />,
                 )}
               </FormItem>
@@ -134,7 +184,9 @@ class Home extends Component {
                 label="Position"
                 {...formItemLayout}
               >
-                {getFieldDecorator('position')(
+                {getFieldDecorator('position', {
+                  initialValue: user.position,
+                })(
                   <Input placeholder="position" />,
                 )}
               </FormItem>
@@ -144,6 +196,7 @@ class Home extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('email', {
+                  initialValue: user.email,
                   rules: [{
                     type: 'email', message: 'The input is not valid E-mail!',
                   }, {

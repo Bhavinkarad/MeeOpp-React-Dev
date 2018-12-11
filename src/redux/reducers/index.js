@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
-import users from './user';
+import user from './user';
 import loader from './loader';
 
 
 const reducer = combineReducers({
-  users,
+  user,
   loader,
 });
 
