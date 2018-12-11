@@ -231,8 +231,8 @@ Home.propTypes = {
 };
 
 const mapStateToProps = state => state;
-const WrappedHomeForm = Form.create()(Home);
-const WrappedHomeStore = connect(mapStateToProps)(WrappedHomeForm);
+const WrappedHomeStore = connect(mapStateToProps)(Home);
+const WrappedHomeForm = Form.create()(WrappedHomeStore);
 
 
-export default withFirebase(WrappedHomeStore);
+export default withFirebase(WrappedHomeForm);
