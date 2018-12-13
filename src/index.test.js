@@ -1,9 +1,10 @@
+/* eslint-disable react/jsx-filename-extension */
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import store from '../../redux/store';
-import Firebase, { FirebaseContext } from '../../components/firebase';
-import Home from './index';
+import store from './redux/store';
+import Firebase, { FirebaseContext } from './components/firebase';
+import Home from './page/Home';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');

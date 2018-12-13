@@ -209,6 +209,8 @@ class Home extends Component {
 
               <FormItem {...buttonItemLayout}>
                 <Button type="primary" htmlType="submit">Submit</Button>
+                <Button type="primary" htmlType="reset">Submit1</Button>
+                <Button type="primary" htmlType="button">Submit2</Button>
               </FormItem>
             </Form>
 
@@ -229,6 +231,7 @@ Home.propTypes = {
   firebase: PropTypes.instanceOf(Firebase).isRequired,
   dispatch: PropTypes.func.isRequired,
 };
+
 
 const mapStateToProps = state => state;
 const WrappedHomeStore = connect(mapStateToProps)(Home);
