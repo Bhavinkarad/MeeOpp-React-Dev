@@ -1,3 +1,20 @@
+### Firebase Configuration
+
+* copy/paste your configuration from your Firebase project's dashboard into one of these files
+  * *src/components/Firebase/firebase.js* file
+  * *.env* file
+  * *.env.development* and *.env.production* files
+
+The *.env* or *.env.development* and *.env.production* files could look like the following then:
+
+```
+REACT_APP_API_KEY=XXXXxxxx
+REACT_APP_AUTH_DOMAIN=xxxxXXXX.firebaseapp.com
+REACT_APP_DATABASE_URL=https://xxxXXXX.firebaseio.com
+REACT_APP_PROJECT_ID=xxxxXXXX
+REACT_APP_STORAGE_BUCKET=xxxxXXXX.appspot.com
+REACT_APP_MESSAGING_SENDER_ID=xxxxXXXX
+```
 
 ### `npm start`
 
@@ -22,22 +39,3 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-
-### Firebase Configuration
-
-* copy/paste your configuration from your Firebase project's dashboard into one of these files
-  * *src/components/Firebase/firebase.js* file
-  * *.env* file
-  * *.env.development* and *.env.production* files
-
-The *.env* or *.env.development* and *.env.production* files could look like the following then:
-
-```
-REACT_APP_API_KEY=XXXXxxxx
-REACT_APP_AUTH_DOMAIN=xxxxXXXX.firebaseapp.com
-REACT_APP_DATABASE_URL=https://xxxXXXX.firebaseio.com
-REACT_APP_PROJECT_ID=xxxxXXXX
-REACT_APP_STORAGE_BUCKET=xxxxXXXX.appspot.com
-REACT_APP_MESSAGING_SENDER_ID=xxxxXXXX
-```
- 
