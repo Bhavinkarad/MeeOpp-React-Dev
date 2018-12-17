@@ -107,16 +107,16 @@ class Home extends Component {
     } : null;
     return (
       <Layout>
-        <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
-          <div className="logo" />
-          <Menu
-            theme="dark"
-            mode="horizontal"
-            defaultSelectedKeys={['2']}
-            style={{ lineHeight: '64px' }}
-          >
-            <Menu.Item key="1">Home</Menu.Item>
-          </Menu>
+        <b>demo</b>
+        <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>          
+        {/* <Menu
+          theme="dark"
+          mode="horizontal"
+          defaultSelectedKeys={['1']}
+          style={{ lineHeight: '64px' }}
+        >
+          <Menu.Item key="1">Home</Menu.Item>
+        </Menu> */}
         </Header>
         <Content style={{ padding: '0 50px', marginTop: 64 }}>
           <div
@@ -209,8 +209,6 @@ class Home extends Component {
 
               <FormItem {...buttonItemLayout}>
                 <Button type="primary" htmlType="submit">Submit</Button>
-                <Button type="primary" htmlType="reset">Submit1</Button>
-                <Button type="primary" htmlType="button">Submit2</Button>
               </FormItem>
             </Form>
 
@@ -228,10 +226,13 @@ class Home extends Component {
 
 
 Home.propTypes = {
-  firebase: PropTypes.instanceOf(Firebase).isRequired,
+  firebase: PropTypes.instanceOf(Firebase),
   dispatch: PropTypes.func.isRequired,
 };
 
+Home.defaultProps = {
+  firebase: PropTypes.instanceOf(Firebase),
+};
 
 const mapStateToProps = state => state;
 const WrappedHomeStore = connect(mapStateToProps)(Home);
