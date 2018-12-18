@@ -1,5 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
+import firebase from 'firebase/app';
+
 import './trollBox.css';
 import { withFirebase } from '../../components/firebase';
 
@@ -7,6 +9,7 @@ const INITIAL_STATE = {
   chats: [],
   message: '',
   user: JSON.parse(localStorage.getItem('user')) || '',
+  mutedList: [],
 };
 
 class TrollBox extends Component {
@@ -16,9 +19,12 @@ class TrollBox extends Component {
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleSendMessage = this.handleSendMessage.bind(this);
     this.setUserName = this.setUserName.bind(this);
+    this.handleMutedChat = this.handleMutedChat.bind(this);
+    this.handleUnMutedChat = this.handleUnMutedChat.bind(this);
   }
 
   componentDidMount() {
+    this.mutedUserList();
     this.fetchChats();
   }
 
@@ -33,6 +39,22 @@ class TrollBox extends Component {
     this.setState({ user, message: '' });
   }
 
+  mutedUserList() {
+    const { firebase: { store: db } } = this.props;
+    const { user } = this.state;
+    const docId = String(user.id);
+    const docRef = db.collection('mutedUsers').doc(docId);
+
+    docRef.onSnapshot((doc) => {
+      if (doc.data()) {
+        const { mutedList } = doc.data();
+        this.setState({ mutedList, isMutedDocCreated: true });
+      } else {
+        this.setState({ isMutedDocCreated: false });
+      }
+    });
+  }
+
   handleTextChange(event) {
     const { name, value } = event.target;
     this.setState({ [name]: value });
@@ -43,10 +65,37 @@ class TrollBox extends Component {
     this.sendTextMessage();
   }
 
+  handleMutedChat(chat) {
+    const { user, isMutedDocCreated } = this.state;
+    const { firebase: { store: db } } = this.props;
+    const doc = String(user.id);
+    const data = {
+      docId: user.id,
+      mutedList: firebase.firestore.FieldValue.arrayUnion(chat.userId),
+    };
+
+    const docRef = db.collection('mutedUsers').doc(doc);
+    if (isMutedDocCreated) {
+      docRef.update(data);
+    } else {
+      docRef.set(data);
+    }
+  }
+
+  handleUnMutedChat(chat) {
+    const { user } = this.state;
+    const { firebase: { store: db } } = this.props;
+    const doc = String(user.id);
+    const data = {
+      docId: user.id,
+      mutedList: firebase.firestore.FieldValue.arrayRemove(chat.userId),
+    };
+    db.collection('mutedUsers').doc(doc).update(data);
+  }
+
   sendTextMessage() {
     const { firebase: { store: db } } = this.props;
     const { message, user } = this.state;
-
     db.collection('chats').add({
       message,
       userName: user.name,
@@ -79,7 +128,10 @@ class TrollBox extends Component {
   }
 
   render() {
-    const { message, chats, user } = this.state;
+    const {
+      message, chats, user,
+      mutedList,
+    } = this.state;
 
     return (
       <Fragment>
@@ -109,6 +161,41 @@ class TrollBox extends Component {
                       <div className="chat-body clearfix">
                         <div className="header">
                           <strong className="primary-font">{chat.userName}</strong>
+                          {user.id !== chat.userId
+                            && (
+                              <div className="pull-right">
+                                {!mutedList.some(id => id === chat.userId) && (
+                                  <button
+                                    type="button"
+                                    className="close"
+                                    aria-label="Muted"
+                                    onClick={() => { this.handleMutedChat(chat); }}
+                                  >
+                                    <span
+                                      className="glyphicon glyphicon-volume-up"
+                                      aria-hidden="true"
+                                    />
+                                  </button>
+                                )
+                                }
+
+                                {mutedList.some(id => id === chat.userId) && (
+                                  <button
+                                    type="button"
+                                    className="close"
+                                    aria-label="UnMuted"
+                                    onClick={() => { this.handleUnMutedChat(chat); }}
+                                  >
+                                    <span
+                                      className="glyphicon glyphicon-volume-off"
+                                      aria-hidden="true"
+                                    />
+                                  </button>
+                                )}
+
+                              </div>
+                            )
+                          }
                         </div>
                         <p>
                           {chat.message}
