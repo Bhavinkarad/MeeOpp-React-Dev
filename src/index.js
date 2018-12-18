@@ -6,7 +6,7 @@ import store from './redux/store';
 import 'antd/dist/antd.css';
 import './index.css';
 
-import Home from './page/Home';
+import Router from './router/router';
 import * as serviceWorker from './serviceWorker';
 
 import Firebase, { FirebaseContext } from './components/firebase';
@@ -14,7 +14,7 @@ import Firebase, { FirebaseContext } from './components/firebase';
 const Root = () => (
   <Provider store={store}>
     <FirebaseContext.Provider value={new Firebase()}>
-      <Home />
+      <Router />
     </FirebaseContext.Provider>
   </Provider>
 );

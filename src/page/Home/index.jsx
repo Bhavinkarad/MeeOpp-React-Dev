@@ -3,11 +3,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
   Form, Input, Button,
-  Layout, Menu, notification,
+  Layout, notification,
+  // Menu
 } from 'antd';
 import './Home.css';
 import { connect } from 'react-redux';
-import Firebase, { withFirebase } from '../../components/firebase';
+import { withFirebase } from '../../components/firebase';
 
 import { createUserSuccess, createUserFail } from '../../redux/actions';
 
@@ -108,8 +109,8 @@ class Home extends Component {
     return (
       <Layout>
         <b>demo</b>
-        <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>          
-        {/* <Menu
+        <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
+          {/* <Menu
           theme="dark"
           mode="horizontal"
           defaultSelectedKeys={['1']}
@@ -226,12 +227,12 @@ class Home extends Component {
 
 
 Home.propTypes = {
-  firebase: PropTypes.instanceOf(Firebase),
+  firebase: PropTypes.shape({}),
   dispatch: PropTypes.func.isRequired,
 };
 
 Home.defaultProps = {
-  firebase: PropTypes.instanceOf(Firebase),
+  firebase: PropTypes.shape({}),
 };
 
 const mapStateToProps = state => state;
