@@ -99,7 +99,7 @@ class TrollBox extends Component {
   sendTextMessage() {
     const { firebase: { store: db } } = this.props;
     const { message, user } = this.state;
-    if (message) {
+    if (message !== '') {
       db.collection('chats').add({
         message,
         userName: user.name,
@@ -150,8 +150,7 @@ class TrollBox extends Component {
     const { scrollHeight } = this.messageList;
     const height = this.messageList.clientHeight;
     const maxScrollTop = scrollHeight - height;
-    this.messageList.scrollTop = maxScrollTop > 0 ? maxScrollTop : 1000;
-    // console.log('--------', scrollHeight, height, scrollTop);
+    this.messageList.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
   }
 
   render() {
@@ -174,6 +173,7 @@ class TrollBox extends Component {
                 data-toggle="collapse"
                 data-parent="#accordion"
                 href="#collapseOne"
+                onClick={this.scrollToBottom.bind(this)}
               >
                 <span className="glyphicon glyphicon-chevron-down" />
               </a>
@@ -273,7 +273,7 @@ class TrollBox extends Component {
                 )
               }
               <div className="input-group">
-                <textarea
+                <input
                   placeholder={user ? 'Type your message here...' : 'Type Your Name Here...'}
                   className="form-control"
                   style={{ height: '35px' }}
