@@ -12,3 +12,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.p-0{
+padding: 0px !important;
+}
+
+.pointer{
+  cursor: pointer;
+}
