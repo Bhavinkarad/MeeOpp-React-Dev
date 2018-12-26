@@ -60,14 +60,14 @@
 }
 
 .right-bottom{
-    position: fixed;
-    right: 15px;
-    bottom: 0px;
+    /* position: fixed; */
+    /* right: 15px; */
+    /* bottom: 0px; */
     width: 400px;
 }
 
 .emoji-icon{
-    position: absolute;    
+    position: absolute;
     z-index: 2;
     bottom: 10px;
     right: 60px;
