@@ -63,7 +63,7 @@
     /* position: fixed; */
     /* right: 15px; */
     /* bottom: 0px; */
-    width: 400px;
+    min-width: 400px;
 }
 
 .emoji-icon{

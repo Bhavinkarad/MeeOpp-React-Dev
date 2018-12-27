@@ -1,8 +1,14 @@
 import React, { Fragment, Component } from 'react';
 import { Rnd } from 'react-rnd';
 
-
 import TrollBox from '../TrollBox';
+
+// import htmlContent from './test.html';
+
+/* function createMarkup() {
+  return { __html: htmlContent };
+} */
+
 
 class TrollBoxContainer extends Component {
   constructor(props) {
@@ -16,7 +22,10 @@ class TrollBoxContainer extends Component {
         <div className="container text-center">
           <b>TrollBox Demo</b>
         </div>
-        <div style={{ position: 'absolute', bottom: 0 }}>
+
+        {/* <div dangerouslySetInnerHTML={createMarkup()} /> */}
+
+        <div style={{ position: 'absolute', bottom: 0, width: '400px' }}>
           <Rnd
             style={{ position: 'relative' }}
             dragAxis="x"

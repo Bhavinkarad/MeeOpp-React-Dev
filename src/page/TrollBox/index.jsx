@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
@@ -12,6 +12,8 @@ const INITIAL_STATE = {
   user: JSON.parse(localStorage.getItem('user')) || '',
   mutedList: [],
   isPickerShow: false,
+  isFullScreen: false,
+  isHideActionMenu: false,
 };
 
 class TrollBox extends Component {
@@ -23,6 +25,7 @@ class TrollBox extends Component {
 
   componentDidMount() {
     this.fetchChats();
+    this.detectFullscreen();
   }
 
   setUserName(event) {
@@ -36,6 +39,17 @@ class TrollBox extends Component {
     this.setState({ user, message: '' });
   }
 
+  detectFullscreen() {
+    const { location } = this.props;
+    if (
+      this.props
+      && location
+      && location.pathname === '/popout'
+    ) {
+      this.setState({ isHideActionMenu: true });
+    }
+  }
+
   bindAllFunction() {
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleSendMessage = this.handleSendMessage.bind(this);
@@ -47,6 +61,8 @@ class TrollBox extends Component {
     this.handlePickerModel = this.handlePickerModel.bind(this);
     this.closePickerModel = this.closePickerModel.bind(this);
     this.addEmoji = this.addEmoji.bind(this);
+    this.openFullScreen = this.openFullScreen.bind(this);
+    this.beforeunload = this.beforeunload.bind(this);
   }
 
   handleTextChange(event) {
@@ -148,165 +164,199 @@ class TrollBox extends Component {
   }
 
   scrollToBottom() {
-    const { scrollHeight } = this.messageList;
-    const height = this.messageList.clientHeight;
-    const maxScrollTop = scrollHeight - height;
-    this.messageList.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+    if (this.messageList) {
+      const { scrollHeight } = this.messageList;
+      const height = this.messageList.clientHeight;
+      const maxScrollTop = scrollHeight - height;
+      this.messageList.scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
+    }
+  }
+
+  openFullScreen(event) {
+    event.preventDefault();
+    const feature = `directories=no,titlebar=no,toolbar=no,
+                    location=no,status=no,menubar=no,scrollbars=no,
+                    resizable=no,width=450,height=600`;
+    this.popOutWindows = window.open('/popout', 'winname', feature);
+    this.setState({ isHideActionMenu: true, isFullScreen: true });
+    this.popOutWindows.addEventListener('beforeunload', this.beforeunload);
+  }
+
+  beforeunload(event) {
+    this.setState({ isHideActionMenu: false, isFullScreen: false });
   }
 
   render() {
     const {
-      message, chats, user,
+      message, chats, user, isHideActionMenu, isFullScreen,
       mutedList, isPickerShow,
     } = this.state;
 
     return (
+      <div className="panel panel-primary  right-bottom">
+        {!isFullScreen
+          && (
+            <Fragment>
+              <div className="panel-heading" id="accordion">
+                <span className="glyphicon glyphicon-comment" />
+                {' '}
+                Chat
 
-      <div className="panel panel-primary right-bottom">
-        <div className="panel-heading" id="accordion">
-          <span className="glyphicon glyphicon-comment" />
-          {' '}
-          Chat
-          <div className="btn-group pull-right">
-            <a
-              type="button"
-              className="btn btn-default btn-xs"
-              data-toggle="collapse"
-              data-parent="#accordion"
-              href="#collapseOne"
-              onClick={this.scrollToBottom.bind(this)}
-            >
-              <span className="glyphicon glyphicon-chevron-down" />
-            </a>
-          </div>
-        </div>
-        <div className="panel-collapse collapse in" id="collapseOne">
-          <div
-            className="panel-body"
-            ref={(div) => {
-              this.messageList = div;
-            }}
-          >
-            <ul className="chat">
-              {
-                !!chats.length && chats.map(chat => (
-                  <li className="left clearfix" key={chat.id}>
-                    <div className="chat-body clearfix">
-                      <div className="header">
-                        <button
-                          className="btn btn-link p-0"
-                          type="button"
-                          onClick={() => { this.handleTagNameClick(chat.userName); }}
-                        >
-                          <strong className="primary-font">
-                            {chat.userName}
-                          </strong>
-                        </button>
+                {!isHideActionMenu
+                  && (
+                    <div className="btn-group pull-right">
+                      <button
+                        type="button"
+                        className="btn btn-default btn-xs"
+                        onClick={this.openFullScreen}
+                      >
+                        <span className="glyphicon glyphicon-resize-full" />
+                      </button>
 
-                        {user.id !== chat.userId
-                          && (
-                            <div className="pull-right">
-                              {!mutedList.some(id => id === chat.userId) && (
-                                <button
-                                  type="button"
-                                  className="close"
-                                  title="Muted"
-                                  aria-label="Muted"
-                                  onClick={() => { this.handleMutedChat(chat); }}
-                                >
-                                  <span
-                                    className="glyphicon glyphicon-volume-up"
-                                    aria-hidden="true"
-                                  />
-                                </button>
-                              )
-                              }
+                      <a
+                        type="button"
+                        className="btn btn-default btn-xs"
+                        data-toggle="collapse"
+                        data-parent="#accordion"
+                        href="#collapseOne"
+                        onClick={this.scrollToBottom.bind(this)}
+                      >
+                        <span className="glyphicon glyphicon-chevron-down" />
+                      </a>
 
-                              {mutedList.some(id => id === chat.userId) && (
-                                <button
-                                  type="button"
-                                  className="close"
-                                  title="unMuted"
-                                  aria-label="UnMuted"
-                                  onClick={() => { this.handleUnMutedChat(chat); }}
-                                >
-                                  <span
-                                    className="glyphicon glyphicon-volume-off"
-                                    aria-hidden="true"
-                                  />
-                                </button>
-                              )}
-
-                            </div>
-                          )
-                        }
-                      </div>
-                      <p style={{ wordBreak: 'break-all' }}>
-                        {chat.message}
-                      </p>
                     </div>
-                  </li>
-                ))
-              }
-              {
-                !chats.length
-                && (
-                  <div className="chat-body text-center clearfix">
-                    <p>
-                      <b>Be a first User</b>
-                    </p>
-                  </div>
-                )
-              }
-
-            </ul>
-          </div>
-          <div className="panel-footer">
-            {isPickerShow
-              && (
-                <Picker
-                  sheetSize={32}
-                  showPreview={false}
-                  showSkinTones={false}
-                  style={{ position: 'absolute', bottom: '45px', right: '20px' }}
-                  onSelect={this.addEmoji}
-                />
-              )
-            }
-            <div className="input-group">
-              <input
-                placeholder={user ? 'Type your message here...' : 'Type Your Name Here...'}
-                className="form-control"
-                style={{ height: '35px' }}
-                name="message"
-                type="text"
-                value={message}
-                onFocus={this.closePickerModel}
-                onKeyPress={this.handleKeyPress}
-                onChange={this.handleTextChange}
-              />
-              <div
-                className="emoji-icon pointer fa fa-smile-o"
-                role="button"
-                tabIndex="0"
-                onClick={this.handlePickerModel}
-                onKeyPress={this.handleKeyPress}
-              />
-
-              <span className="input-group-btn">
-                <button
-                  type="button"
-                  className="btn btn-warning btn-sm"
-                  style={{ height: '35px' }}
-                  onClick={user ? this.handleSendMessage : this.setUserName}
-
+                  )
+                }
+              </div>
+              <div className="panel-collapse collapse in" style={{ position: 'relative' }} id="collapseOne">
+                <div
+                  className="panel-body"
+                  ref={(div) => {
+                    this.messageList = div;
+                  }}
                 >
-                  {user ? 'Send' : 'save'}
-                </button>
-              </span>
-            </div>
-          </div>
-        </div>
+                  <ul className="chat">
+                    {
+                      !!chats.length && chats.map(chat => (
+                        <li className="left clearfix" key={chat.id}>
+                          <div className="chat-body clearfix">
+                            <div className="header">
+                              <button
+                                className="btn btn-link p-0"
+                                type="button"
+                                onClick={() => { this.handleTagNameClick(chat.userName); }}
+                              >
+                                <strong className="primary-font">
+                                  {chat.userName}
+                                </strong>
+                              </button>
+
+                              {user.id !== chat.userId
+                                && (
+                                  <div className="pull-right">
+                                    {!mutedList.some(id => id === chat.userId) && (
+                                      <button
+                                        type="button"
+                                        className="close"
+                                        title="Muted"
+                                        aria-label="Muted"
+                                        onClick={() => { this.handleMutedChat(chat); }}
+                                      >
+                                        <span
+                                          className="glyphicon glyphicon-volume-up"
+                                          aria-hidden="true"
+                                        />
+                                      </button>
+                                    )
+                                    }
+
+                                    {mutedList.some(id => id === chat.userId) && (
+                                      <button
+                                        type="button"
+                                        className="close"
+                                        title="unMuted"
+                                        aria-label="UnMuted"
+                                        onClick={() => { this.handleUnMutedChat(chat); }}
+                                      >
+                                        <span
+                                          className="glyphicon glyphicon-volume-off"
+                                          aria-hidden="true"
+                                        />
+                                      </button>
+                                    )}
+
+                                  </div>
+                                )
+                              }
+                            </div>
+                            <p style={{ wordBreak: 'break-all' }}>
+                              {chat.message}
+                            </p>
+                          </div>
+                        </li>
+                      ))
+                    }
+                    {
+                      !chats.length
+                      && (
+                        <div className="chat-body text-center clearfix">
+                          <p>
+                            <b>Be a first User</b>
+                          </p>
+                        </div>
+                      )
+                    }
+
+                  </ul>
+                </div>
+                <div className="panel-footer">
+                  {isPickerShow
+                    && (
+                      <Picker
+                        sheetSize={32}
+                        showPreview={false}
+                        showSkinTones={false}
+                        style={{ position: 'absolute', bottom: '45px', right: '20px' }}
+                        onSelect={this.addEmoji}
+                      />
+                    )
+                  }
+                  <div className="input-group">
+                    <input
+                      placeholder={user ? 'Type your message here...' : 'Type Your Name Here...'}
+                      className="form-control"
+                      style={{ height: '35px' }}
+                      name="message"
+                      type="text"
+                      value={message}
+                      onFocus={this.closePickerModel}
+                      onKeyPress={this.handleKeyPress}
+                      onChange={this.handleTextChange}
+                    />
+                    <div
+                      className="emoji-icon pointer fa fa-smile-o"
+                      role="button"
+                      tabIndex="0"
+                      onClick={this.handlePickerModel}
+                      onKeyPress={this.handleKeyPress}
+                    />
+
+                    <span className="input-group-btn">
+                      <button
+                        type="button"
+                        className="btn btn-warning btn-sm"
+                        style={{ height: '35px' }}
+                        onClick={user ? this.handleSendMessage : this.setUserName}
+
+                      >
+                        {user ? 'Send' : 'save'}
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </Fragment>)
+        }
       </div>
     );
   }
