@@ -37,6 +37,7 @@ class TrollBoxContainer extends Component {
             dragAxis="x"
             bounds="window"
             enableUserSelectHack={false}
+            enableResizing={false}
           >
             <TrollBox />
           </Rnd>
