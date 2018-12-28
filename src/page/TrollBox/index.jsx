@@ -182,7 +182,7 @@ class TrollBox extends Component {
     this.popOutWindows.addEventListener('beforeunload', this.beforeunload);
   }
 
-  beforeunload(event) {
+  beforeunload() {
     this.setState({ isHideActionMenu: false, isFullScreen: false });
   }
 
@@ -193,15 +193,14 @@ class TrollBox extends Component {
     } = this.state;
 
     return (
-      <div className="panel panel-primary  right-bottom">
+      <Fragment>
         {!isFullScreen
           && (
-            <Fragment>
+            <div className="panel panel-primary  right-bottom">
               <div className="panel-heading" id="accordion">
                 <span className="glyphicon glyphicon-comment" />
                 {' '}
                 Chat
-
                 {!isHideActionMenu
                   && (
                     <div className="btn-group pull-right">
@@ -355,9 +354,10 @@ class TrollBox extends Component {
                   </div>
                 </div>
               </div>
-            </Fragment>)
+            </div>
+          )
         }
-      </div>
+      </Fragment>
     );
   }
 }

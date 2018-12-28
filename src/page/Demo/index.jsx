@@ -13,7 +13,7 @@ import TrollBox from '../TrollBox';
 class TrollBoxContainer extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
+    this.state = {};
   }
 
   render() {
@@ -25,7 +25,13 @@ class TrollBoxContainer extends Component {
 
         {/* <div dangerouslySetInnerHTML={createMarkup()} /> */}
 
-        <div style={{ position: 'absolute', bottom: 0, width: '400px' }}>
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            width: '400px',
+          }}
+        >
           <Rnd
             style={{ position: 'relative' }}
             dragAxis="x"
