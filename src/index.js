@@ -9,7 +9,7 @@ import './index.css';
 import Router from './router/router';
 import * as serviceWorker from './serviceWorker';
 
-import Firebase, { FirebaseContext } from './components/firebase';
+import Firebase, { FirebaseContext } from './Components/firebase';
 
 const Root = () => (
   <Provider store={store}>

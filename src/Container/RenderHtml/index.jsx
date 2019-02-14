@@ -5,11 +5,11 @@ import { Rnd } from 'react-rnd';
 import TrollBox from '../TrollBox';
 
 
-class TrollBoxContainer extends Component {
+class RenderHtml extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      htmlContent: '<div class="ext">Hello11!</div>',
+      htmlContent: '',
     };
   }
 
@@ -20,6 +20,7 @@ class TrollBoxContainer extends Component {
         'Content-Type': 'text/html',
       },
     };
+    document.title = 'Render html file';
     fetch('./shared/test.html', init)
       .then(response => response.text())
       .then(htmlContent => this.setState({ htmlContent }));
@@ -59,4 +60,4 @@ class TrollBoxContainer extends Component {
 }
 
 
-export default TrollBoxContainer;
+export default RenderHtml;

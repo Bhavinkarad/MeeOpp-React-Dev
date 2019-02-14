@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import './trollBox.css';
-import { withFirebase } from '../../components/firebase';
+import { withFirebase } from '../../Components/firebase';
 
 
 const INITIAL_STATE = {

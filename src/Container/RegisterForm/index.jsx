@@ -8,7 +8,7 @@ import {
 } from 'antd';
 import './Home.css';
 import { connect } from 'react-redux';
-import { withFirebase } from '../../components/firebase';
+import { withFirebase } from '../../Components/firebase';
 
 import { createUserSuccess, createUserFail } from '../../redux/actions';
 

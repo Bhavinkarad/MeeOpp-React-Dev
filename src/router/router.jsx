@@ -1,18 +1,16 @@
 import React, { Fragment } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import Home from '../page/Home';
-import Calculator from '../page/Calculator';
-import Demo from '../page/Demo';
-import TrollBox from '../page/TrollBox';
+import RegisterForm from '../Container/RegisterForm';
+import RenderHtml from '../Container/RenderHtml';
+import TrollBox from '../Container/TrollBox';
 
 const AppRouter = () => (
   <Fragment>
     <Router>
       <Fragment>
-        <Route path="/" exact component={Demo} />
-        <Route path="/register" exact component={Home} />
-        <Route path="/calculator/" component={Calculator} />
-        <Route path="/demo/" component={Demo} />
+        <Route path="/" exact component={RenderHtml} />
+        <Route path="/register/" exact component={RegisterForm} />
+        <Route path="/renderhtml/" component={RenderHtml} />
         <Route path="/popout/" component={TrollBox} />
       </Fragment>
     </Router>
