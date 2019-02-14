@@ -14,8 +14,9 @@ class Firebase {
   constructor() {
     app.initializeApp(config);
     this.store = app.firestore();
-    const settings = {/* your settings... */ timestampsInSnapshots: true };
-    this.store.settings(settings);
+    /* your settings... */
+    /* const settings = { timestampsInSnapshots: true };
+    this.store.settings(settings); */
   }
 }
 
