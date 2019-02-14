@@ -1,29 +1,40 @@
+/* eslint-disable react/no-danger */
 import React, { Fragment, Component } from 'react';
 import { Rnd } from 'react-rnd';
 
 import TrollBox from '../TrollBox';
 
-// import htmlContent from './test.html';
-
-/* function createMarkup() {
-  return { __html: htmlContent };
-} */
-
 
 class TrollBoxContainer extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      htmlContent: '<div class="ext">Hello11!</div>',
+    };
   }
 
+  componentDidMount() {
+    const init = {
+      headers: {
+        Accept: 'text/html',
+        'Content-Type': 'text/html',
+      },
+    };
+    fetch('./shared/test.html', init)
+      .then(response => response.text())
+      .then(htmlContent => this.setState({ htmlContent }));
+  }
+
+
   render() {
+    const { htmlContent } = this.state;
     return (
       <Fragment>
         <div className="container text-center">
           <b>TrollBox Demo</b>
         </div>
 
-        {/* <div dangerouslySetInnerHTML={createMarkup()} /> */}
+        <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
 
         <div
           style={{
